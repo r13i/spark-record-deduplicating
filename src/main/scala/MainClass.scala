@@ -22,18 +22,29 @@ object MainClass {
 
 
     def main (args: Array[String]) {
-        val rawBlocks = spark.sparkContext.textFile(conf.getString("data.path"))
 
-        println("> Number of rows (records + headers): " + rawBlocks.count)
+        // val rawBlocks = spark.sparkContext.textFile(conf.getString("data.path"))
 
-        rawBlocks.take(10) foreach println
+        // println("> Number of rows (records + headers): " + rawBlocks.count)
 
-        // We use the fact that Header rows in the dataset contain the key "id_1" (among others) to distinguish between headers and and actual records
-        def isHeader(line: String): Boolean = line.contains("id_1")
+        // rawBlocks.take(10) foreach println
 
-        val noheader = rawBlocks.filter(! isHeader(_))
-        // val noheader = rawBlocks.filterNot(isHeader(_))
+        // // We use the fact that Header rows in the dataset contain the key "id_1" (among others) to distinguish between headers and and actual records
+        // def isHeader(line: String): Boolean = line.contains("id_1")
 
-        println("> Number of records: " + noheader.count)
+        // val noheader = rawBlocks.filter(! isHeader(_))
+        // // val noheader = rawBlocks.filterNot(isHeader(_))
+
+        // println("> Number of records: " + noheader.count)
+
+
+        val parsed = spark.read
+            .option("header", "true")
+            .option("nullValue", "?")
+            .option("inferSchema", "true")
+            .csv(conf.getString("data.path"))
+
+        parsed.show(5)
+        parsed.printSchema()
     }
 }
