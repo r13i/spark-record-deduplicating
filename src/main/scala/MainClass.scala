@@ -17,6 +17,8 @@ object MainClass {
         .master(conf.getString("spark.master"))
         .getOrCreate()
 
+    import spark.implicits._
+
     // Reduce/adapt log level
     val rootLogger = Logger.getRootLogger()
     rootLogger.setLevel(Level.ERROR)
@@ -47,18 +49,19 @@ object MainClass {
             .option("nullValue", "?")
             .option("inferSchema", "true")
             .csv(conf.getString("data.path"))
-        // Also, given that the content of a DataFrame or RDD is transient, we would like to cache/persist
-        // it into memory to reduce access latency
-            .cache()       // Or use .persist(StorageLevel.MEMORY)
+        // Also, given that the content of a DataFrame or RDD is frequently used, we would
+        // like to cache/persist it into memory to reduce access latency, with taking into account
+        // the available memory"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+            .cache()       // Or use .persist(StorageLevel.MEMORY)  // Or StorageLevel.MEMORY_SER for serialzed data
 
         parsed.show(5)
         parsed.printSchema()
 
         // Save as a Parquet file
-        parsed.write.mode(SaveMode.Ignore).parquet("data/parsed-data.parquet")
+        parsed.write.mode(SaveMode.Ignore).parquet(conf.getString("data/parquet"))
 
         // Count the matches vs non-matches
-        parsed.rdd.map(_.getAs[Boolean]("is_match")).countByValue()
-
+        // val match_number: scala.collections.Map[Boolean, Long] = parsed.rdd.map(_.getAs[Boolean]("is_match")).countByValue()
+        parsed.groupBy("is_match").count().orderBy($"count".desc).show()
     }
 }
