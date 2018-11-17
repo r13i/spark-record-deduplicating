@@ -1,8 +1,12 @@
-donation.zip
+data/
+spark-warehouse/
+.gradle/
+metastore_db/
 
+*.log
 
 # .gradle
-/build/
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting

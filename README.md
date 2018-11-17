@@ -19,5 +19,18 @@ This data set is available at this URL : https://bit.ly/1Aoywaq
 
 To download it, run this command : `$ curl -L -o data.zip https://bit.ly/1Aoywaq`
 
+
+## How To
+
+- `$ git clone https://github.com/redouane-dev/spark-record-deduplicating.git`
+- `$ cd spark-record-deduplicating`
+- `$ mkdir -p data/linkage`
+- `$ curl -L -o data/data.zip https://bit.ly/1Aoywaq`
+- `$ unzip -d ./data ./data/data.zip`
+- `$ unzip -d ./data/linkage './data/block_*.zip`
+- `$ rm -v ./data/block_*.zip`
+- `$ ./gradlew build`
+- `$ ./gradlew run`
+
 ## References
 - "Advanced Analytics with Spark by Sandy Ryza, Uri Laserson, Sean Owen, and Josh Wills (O’Reilly). Copyright 2015 Sandy Ryza, Uri Laserson, Sean Owen, and Josh Wills, 978-1-491-91276-8."
