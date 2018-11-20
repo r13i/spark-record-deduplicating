@@ -22,14 +22,20 @@ To download it, run this command : `$ curl -L -o data.zip https://bit.ly/1Aoywaq
 
 ## How To
 
+#### Build
 - `$ git clone https://github.com/redouane-dev/spark-record-deduplicating.git`
 - `$ cd spark-record-deduplicating`
+- `$ ./gradlew build`
+
+#### Run with the Data
+###### Gathering the Data
 - `$ mkdir -p data/linkage`
 - `$ curl -L -o data/data.zip https://bit.ly/1Aoywaq`
 - `$ unzip -d ./data ./data/data.zip`
-- `$ unzip -d ./data/linkage './data/block_*.zip`
-- `$ rm -v ./data/block_*.zip`
-- `$ ./gradlew build`
+- `$ unzip -d ./data/linkage './data/block_*.zip'`
+- `$ rm -v ./data/block_*.zip`  (Optionaly remove the .zip files)
+
+###### Run the project
 - `$ ./gradlew run`
 
 ## References
