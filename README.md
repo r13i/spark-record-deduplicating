@@ -38,5 +38,10 @@ To download it, run this command : `$ curl -L -o data.zip https://bit.ly/1Aoywaq
 ###### Run the project
 - `$ ./gradlew run`
 
+
+## Follow-up Improvements
+- Find how to plot the ROC (Receiver Operating Characteristic) in Scala
+- Try new sets of features (consider low-value or deprecated features for the scoring function)
+
 ## References
 - "Advanced Analytics with Spark by Sandy Ryza, Uri Laserson, Sean Owen, and Josh Wills (O’Reilly). Copyright 2015 Sandy Ryza, Uri Laserson, Sean Owen, and Josh Wills, 978-1-491-91276-8."

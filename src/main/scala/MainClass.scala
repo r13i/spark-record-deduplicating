@@ -69,5 +69,33 @@ object MainClass extends SparkMachinery {
         // We pivot (transpose) the summary DataFrames 
         val matchSummaryT = pivotSummary(matchSummary)
         val missSummaryT = pivotSummary(missSummary)
+
+        // Compare features for match vs. non-match summaries
+        matchSummaryT.createOrReplaceTempView("match_desc")
+        missSummaryT.createOrReplaceTempView("miss_desc")
+
+        spark.sql("""
+            SELECT a.field, a.count + b.count total, a.mean - b.mean delta
+            FROM match_desc a INNER JOIN miss_desc b ON a.field = b.field
+            WHERE a.field NOT IN ("id_1", "id_2")
+            ORDER BY delta DESC, total DESC
+        """).show
+
+        println("> We see that are 4 types of features :")
+        println(">> Features almost always available / With a neat difference between the two classes")
+        println(">> Features almost always available / With little difference between the two classes")
+        println(">> Features scarcely available / With a neat difference between the two classes")
+        println(">> Features scarcely available / With little difference between the two classes")
+
+        // Calculate match score based on `cmp_lname_c1`, `cmp_plz`, `cmp_by`, `cmp_bd`, `cmp_bm`
+        // Casting the [[DataFrame]] to [[Dataset[MatchData]]], with `MatchData` a case class (@see Utils.scala)
+        val matchData = parsed.as[MatchData]
+        val scored = matchData.map { md =>
+            (scoreMatchData(md), md.is_match)
+        }.toDF("score", "is_match")
+
+        val thresh = 4.0
+        println(s"> The confusion matrix is given below for a discrimination threshold of $thresh")
+        crossTabs(scored, thresh).show()
     }
 }
