@@ -3,6 +3,8 @@
 import org.apache.spark.sql.SaveMode
 import org.apache.spark.sql.functions.{avg, stddev}
 
+import Utils._
+
 
 object MainClass extends SparkMachinery {
 
@@ -64,7 +66,8 @@ object MainClass extends SparkMachinery {
         val misses = parsed.filter($"is_match" === false)
         val missSummary = misses.describe()
 
-        matchSummary.show()
-        missSummary.show()
+        // We pivot (transpose) the summary DataFrames 
+        val matchSummaryT = pivotSummary(matchSummary)
+        val missSummaryT = pivotSummary(missSummary)
     }
 }
